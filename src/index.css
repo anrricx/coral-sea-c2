@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #090D16; }
+
+@layer components {
+  .panel { @apply bg-c2-panel border border-c2-border rounded-lg; }
+  .btn-primary {
+    @apply inline-flex items-center gap-1.5 rounded px-3 py-1.5 font-mono text-xs font-bold tracking-wider
+      bg-cyan-500/15 text-cyan-300 border border-cyan-500/50 transition-all
+      hover:bg-cyan-500/25 hover:shadow-[0_0_16px_-4px_#38BDF8]
+      disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-1.5 rounded px-2 py-1.5 font-mono text-[11px] tracking-wider
+      text-slate-400 border border-transparent hover:border-c2-border hover:text-slate-100 hover:bg-slate-800/50 transition-colors
+      disabled:opacity-30 disabled:cursor-not-allowed;
+  }
+  .input {
+    @apply bg-black/50 border border-c2-border focus:border-violet-500 rounded px-3 py-2 font-mono text-sm text-slate-100 outline-none;
+  }
+  .chip {
+    @apply rounded-full border border-c2-border bg-slate-900/60 px-2.5 py-0.5 text-[10.5px] font-mono text-slate-400
+      hover:border-cyan-500/50 hover:text-cyan-300 transition-colors disabled:opacity-40 max-w-[360px] truncate;
+  }
+}
+
+/* Subtle CRT scanlines + map vignette */
+.scanlines::after {
+  content: ''; pointer-events: none; position: fixed; inset: 0; z-index: 60;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 3px);
+}
+.map-vignette { background: radial-gradient(ellipse at center, #0D1628 0%, #090D16 75%); }
+
+/* Units: smooth tactical movement */
+.unit-move { transition: transform 480ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.unit-spawn { animation: spawn-in 520ms cubic-bezier(0.2, 1.4, 0.4, 1) both; transform-box: fill-box; transform-origin: center; }
+@keyframes spawn-in { from { transform: scale(0.1); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.spin-slow { animation: spin 6s linear infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Pulsing hex highlights */
+.hex-pulse { animation: hex-pulse 1.4s ease-in-out infinite; }
+@keyframes hex-pulse { 0%, 100% { fill-opacity: 0.06; stroke-opacity: 0.45; } 50% { fill-opacity: 0.22; stroke-opacity: 1; } }
+.hex-pulse-red { animation: hex-pulse 0.9s ease-in-out infinite; }
+.reticle-pulse { animation: reticle 1s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes reticle { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: 0.55; } }
+.confirm-blink { animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.3; } }
+
+/* Zones */
+.zone-pulse { animation: zone-breathe 3.2s ease-in-out infinite; }
+@keyframes zone-breathe { 0%, 100% { fill-opacity: 0.12; } 50% { fill-opacity: 0.24; } }
+.zone-in { animation: fade 600ms ease-out; }
+
+/* FX */
+.fx-float { animation: float-up 1.3s ease-out forwards; }
+@keyframes float-up { 0% { transform: translateY(6px); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-30px); opacity: 0; } }
+.fx-blast { animation: blast 700ms ease-out forwards; transform-box: fill-box; transform-origin: center; }
+@keyframes blast { 0% { transform: scale(0.1); opacity: 0.85; } 100% { transform: scale(1); opacity: 0; } }
+.fx-blast-core { animation: blast 420ms ease-out forwards; transform-box: fill-box; transform-origin: center; }
+.fx-ring { animation: ring 900ms ease-out forwards; transform-box: fill-box; transform-origin: center; }
+@keyframes ring { 0% { transform: scale(0.3); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
+.fx-ping { animation: ping-ring 1.2s ease-out forwards; transform-box: fill-box; transform-origin: center; }
+.fx-delay { animation-delay: 300ms; opacity: 0; }
+@keyframes ping-ring { 0% { transform: scale(0.15); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
+.fx-spawn { animation: ring 1s ease-out forwards; transform-box: fill-box; transform-origin: center; }
+.fx-beam { animation: beam 700ms ease-out forwards; }
+@keyframes beam { 0% { opacity: 0.8; } 100% { opacity: 0; } }
+.fx-fade { animation: beam 1.2s ease-out forwards; }
+
+/* UI entrances */
+.toast-in { animation: slide-in 260ms ease-out; }
+@keyframes slide-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-in { animation: pop 220ms ease-out; }
+@keyframes pop { from { transform: scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
+.badge-in { animation: pop 300ms ease-out; }
+.log-in { animation: fade 300ms ease-out; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}
